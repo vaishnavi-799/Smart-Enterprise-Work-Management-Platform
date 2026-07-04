@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Details - Project Management Dashboard</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0f6ff',
+              100: '#e0edff',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-[#f8fafc] text-slate-800 min-h-screen flex">
+
+  <!-- LEFT SIDEBAR -->
+  <aside class="w-64 bg-[#1e1e2d] text-slate-300 flex flex-col h-screen sticky top-0 flex-shrink-0">
+    <!-- Sidebar Header -->
+    <div class="p-6 flex items-center gap-3 border-b border-slate-700/30">
+      <div class="bg-blue-600 text-white p-2 rounded-lg flex items-center justify-center">
+        <i data-lucide="layers" class="w-5 h-5"></i>
+      </div>
+      <span class="font-bold text-lg tracking-wider text-white">Grid</span>
+    </div>
+
+    <!-- Navigation links -->
+    <nav class="p-4 space-y-1 flex-1">
+      <a href="index.html" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-all duration-155">
+        <i data-lucide="folder-kanban" class="w-4 h-4 text-slate-400"></i>
+        <span class="text-sm font-medium">Projects Portal</span>
+      </a>
+      <a href="tasks.html" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-blue-600 text-white transition-all duration-155">
+        <i data-lucide="list-todo" class="w-4 h-4"></i>
+        <span class="text-sm font-medium">Task Matrix</span>
+      </a>
+
+      <a href="#" onclick="window.location.reload()" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-rose-400 transition-all duration-155 mt-8">
+        <i data-lucide="log-out" class="w-4 h-4 text-slate-400"></i>
+        <span class="text-sm font-medium">Logout</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- MAIN CONTAINER -->
+  <main class="flex-1 flex flex-col min-h-screen">
+    <!-- Header -->
+    <header class="p-8 pb-4 flex justify-between items-center bg-white border-b border-slate-200">
+      <a href="tasks.html" class="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        <span>Back</span>
+      </a>
+      <h2 class="text-sm font-bold text-slate-400 uppercase tracking-wider">Task Details</h2>
+      <button onclick="openEditModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-semibold shadow-sm transition-all duration-150">
+        Edit Task
+      </button>
+    </header>
+
+    <!-- Error Screen (Hidden by default) -->
+    <div id="error-screen" class="hidden px-8 py-12 flex-1 flex flex-col items-center justify-center text-center">
+      <div class="bg-red-50 text-red-600 p-4 rounded-full mb-4">
+        <i data-lucide="alert-triangle" class="w-12 h-12"></i>
+      </div>
+      <h2 class="text-2xl font-bold text-slate-800 mb-2">Task Not Found</h2>
+      <a href="tasks.html" class="text-blue-600 hover:underline">Return to Tasks</a>
+    </div>
+
+    <!-- Workspace Grid -->
+    <div id="details-workspace" class="p-8 grid grid-cols-12 gap-8 flex-1">
+      
+      <!-- Left Area (Task Contents) -->
+      <section class="col-span-8 space-y-6">
+        <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+          <!-- Title -->
+          <div>
+            <h1 id="task-title" class="text-2xl font-bold text-slate-900">Task Title</h1>
+          </div>
+
+          <!-- Parameters row -->
+          <div class="grid grid-cols-5 gap-4 py-4 border-y border-slate-100 text-xs">
+            <div>
+              <span class="block text-slate-400 font-semibold uppercase tracking-wider mb-1">Project</span>
+              <span id="task-project" class="font-bold text-slate-700">Project Name</span>
+            </div>
+            <div>
+              <span class="block text-slate-400 font-semibold uppercase tracking-wider mb-1">Assignee</span>
+              <div class="flex items-center gap-1.5 mt-0.5">
+                <div id="assignee-avatar" class="w-5 h-5 rounded-full bg-blue-600 text-white text-[9px] font-bold flex items-center justify-center">
+                  U
+                </div>
+                <span id="task-assignee" class="font-bold text-slate-700">User</span>
+              </div>
+            </div>
+            <div>
+              <span class="block text-slate-400 font-semibold uppercase tracking-wider mb-1">Status</span>
+              <span id="task-status" class="px-2.5 py-0.5 text-[10px] font-bold rounded-full inline-block mt-0.5">In Progress</span>
+            </div>
+            <div>
+              <span class="block text-slate-400 font-semibold uppercase tracking-wider mb-1">Priority</span>
+              <span id="task-priority" class="px-2.5 py-0.5 text-[10px] font-bold rounded-full inline-block mt-0.5">High</span>
+            </div>
+            <div>
+              <span class="block text-slate-400 font-semibold uppercase tracking-wider mb-1">Due Date</span>
+              <span id="task-duedate" class="font-bold text-slate-700">Due Date</span>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div>
+            <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Description</span>
+            <p id="task-desc" class="text-sm text-slate-600 leading-relaxed bg-slate-50/50 p-4 rounded-xl border border-slate-100">Task description notes go here...</p>
+          </div>
+
+          <!-- Checklist subtasks -->
+          <div>
+            <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Subtasks</span>
+            
+            <div id="checklist-container" class="space-y-2">
+              <!-- Checklist subtasks -->
+            </div>
+
+            <!-- New subtask -->
+            <div class="flex gap-2 mt-4">
+              <input type="text" id="new-item-input" placeholder="Create new checklist item..." class="flex-1 border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white">
+              <button onclick="addChecklistItem()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-colors">Add</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Area (Comments log) -->
+      <aside class="col-span-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between h-[600px]">
+        <div class="flex-1 overflow-y-auto space-y-4">
+          <h3 class="font-bold text-slate-800 border-b border-slate-100 pb-3">Comments</h3>
+          
+          <div id="comments-list" class="space-y-4 pr-1">
+            <!-- Comments rendering -->
+          </div>
+        </div>
+
+        <!-- Create comment input -->
+        <div class="pt-4 border-t border-slate-100 space-y-2 mt-4">
+          <textarea id="comment-input" rows="2" placeholder="Write a comment..." class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-slate-50/50"></textarea>
+          <div class="flex justify-end">
+            <button onclick="postComment()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-lg text-xs font-semibold shadow-sm transition-colors flex items-center gap-1">
+              <span>Send</span>
+              <i data-lucide="send" class="w-3 h-3"></i>
+            </button>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </main>
+
+  <!-- EDIT TASK POPUP MODAL -->
+  <div id="task-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeEditModal()"></div>
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-200 max-w-md w-full overflow-hidden z-10 animate-in fade-in zoom-in duration-200">
+      <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center">
+        <h3 class="font-bold text-slate-800 text-lg">Edit Task Details</h3>
+        <button onclick="closeEditModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-50">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <form id="task-form" onsubmit="handleTaskSubmit(event)" class="p-6 space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Task Title</label>
+          <input type="text" id="modal-task-title" required class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm bg-white">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Description</label>
+          <textarea id="modal-task-desc" rows="3" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm bg-white"></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Assignee</label>
+            <select id="modal-task-assignee" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm bg-white text-slate-700">
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Due Date</label>
+            <input type="date" id="modal-task-duedate" required class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm bg-white">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Status</label>
+            <select id="modal-task-status" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm bg-white">
+              <option value="Pending">Pending</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Priority</label>
+            <select id="modal-task-priority" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm bg-white">
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-slate-100 flex justify-end gap-3">
+          <button type="button" onclick="closeEditModal()" class="px-4 py-2.5 text-slate-500 font-semibold text-sm hover:bg-slate-50 rounded-xl border border-slate-200">Cancel</button>
+          <button type="submit" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl shadow-sm">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="db.js"></script>
+  <script>
+    let currentTask = null;
+
+    function getTaskIdFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("id");
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return "";
+      const date = new Date(dateStr);
+      if (isNaN(date.getTime())) return dateStr;
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+    }
+
+    function renderTaskDetails() {
+      const id = getTaskIdFromUrl();
+      currentTask = window.PM_DB.getTaskById(id);
+
+      if (!currentTask) {
+        document.getElementById("details-workspace").classList.add("hidden");
+        document.getElementById("error-screen").classList.remove("hidden");
+        return;
+      }
+
+      const members = window.PM_DB.getMembers();
+      const assigneeInfo = members.find(m => m.name === currentTask.assignee) || { initials: "?", color: "bg-slate-400" };
+
+      document.getElementById("task-title").innerText = currentTask.title;
+      document.getElementById("task-project").innerText = currentTask.projectName;
+      document.getElementById("task-assignee").innerText = currentTask.assignee;
+      
+      const avatar = document.getElementById("assignee-avatar");
+      avatar.innerText = assigneeInfo.initials;
+      avatar.className = `w-5 h-5 rounded-full ${assigneeInfo.color} text-white text-[9px] font-bold flex items-center justify-center`;
+
+      const statusSpan = document.getElementById("task-status");
+      statusSpan.innerText = currentTask.status;
+      statusSpan.className = "px-2.5 py-0.5 text-[10px] font-bold rounded-full inline-block mt-0.5 " + 
+        (currentTask.status === "Completed" ? "badge-completed" : (currentTask.status === "Pending" ? "badge-awaiting-review" : "badge-in-progress"));
+
+      const prioritySpan = document.getElementById("task-priority");
+      prioritySpan.innerText = currentTask.priority;
+      prioritySpan.className = "px-2.5 py-0.5 text-[10px] font-bold rounded-full inline-block mt-0.5 " + 
+        (currentTask.priority === "High" ? "badge-priority-high" : (currentTask.priority === "Medium" ? "badge-priority-med" : "badge-priority-low"));
+
+      document.getElementById("task-duedate").innerText = formatDate(currentTask.dueDate);
+      document.getElementById("task-desc").innerText = currentTask.description || "No task description notes specified.";
+
+      renderChecklist();
+      renderComments();
+      lucide.createIcons();
+    }
+
+    function renderChecklist() {
+      const container = document.getElementById("checklist-container");
+      container.innerHTML = "";
+      
+      const checklist = currentTask.checklist || [];
+      if (checklist.length === 0) {
+        container.innerHTML = `<span class="text-xs text-slate-400 italic">No subtask checklists created yet.</span>`;
+        return;
+      }
+
+      checklist.forEach((item, index) => {
+        container.innerHTML += `
+          <div class="flex items-center justify-between p-3 rounded-xl border border-slate-100 hover:bg-slate-50 transition-colors">
+            <label class="flex items-center gap-3 cursor-pointer flex-1 min-w-0">
+              <input type="checkbox" ${item.done ? 'checked' : ''} onchange="toggleChecklistItem(${index})" class="rounded border-slate-350 text-blue-600 focus:ring-blue-500 w-4 h-4">
+              <span class="text-sm ${item.done ? 'line-through text-slate-400' : 'text-slate-700'} font-semibold truncate">${item.text}</span>
+            </label>
+            <button onclick="deleteChecklistItem(${index})" class="p-1 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+          </div>
+        `;
+      });
+      lucide.createIcons();
+    }
+
+    function toggleChecklistItem(index) {
+      currentTask.checklist[index].done = !currentTask.checklist[index].done;
+      
+      const total = currentTask.checklist.length;
+      const completed = currentTask.checklist.filter(c => c.done).length;
+      currentTask.progress = Math.round((completed / total) * 100);
+
+      window.PM_DB.saveTask(currentTask);
+      renderTaskDetails();
+    }
+
+    function addChecklistItem() {
+      const input = document.getElementById("new-item-input");
+      const text = input.value.trim();
+      if (!text) return;
+
+      if (!currentTask.checklist) currentTask.checklist = [];
+      currentTask.checklist.push({ text: text, done: false });
+
+      const total = currentTask.checklist.length;
+      const completed = currentTask.checklist.filter(c => c.done).length;
+      currentTask.progress = Math.round((completed / total) * 100);
+
+      window.PM_DB.saveTask(currentTask);
+      input.value = "";
+      renderTaskDetails();
+    }
+
+    function deleteChecklistItem(index) {
+      currentTask.checklist.splice(index, 1);
+      
+      const total = currentTask.checklist.length;
+      const completed = total > 0 ? currentTask.checklist.filter(c => c.done).length : 0;
+      currentTask.progress = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+      window.PM_DB.saveTask(currentTask);
+      renderTaskDetails();
+    }
+
+    function renderComments() {
+      const list = document.getElementById("comments-list");
+      list.innerHTML = "";
+
+      const comments = currentTask.comments || [];
+      if (comments.length === 0) {
+        list.innerHTML = `<span class="text-xs text-slate-400 italic block py-4 text-center">No comments posted yet.</span>`;
+        return;
+      }
+
+      comments.forEach(c => {
+        list.innerHTML += `
+          <div class="flex gap-2.5 text-xs items-start">
+            <div class="w-7 h-7 rounded-full ${c.color} text-white font-bold flex items-center justify-center flex-shrink-0 mt-0.5 text-[9px]">
+              ${c.avatar}
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="bg-slate-50 border border-slate-100 rounded-2xl px-3.5 py-2">
+                <span class="font-bold text-slate-800 block mb-0.5">${c.user}</span>
+                <p class="text-slate-600 text-xs leading-relaxed">${c.text}</p>
+              </div>
+              <span class="text-[9px] text-slate-400 font-semibold ml-2 mt-1 block">${c.time}</span>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function postComment() {
+      const input = document.getElementById("comment-input");
+      const text = input.value.trim();
+      if (!text) return;
+
+      if (!currentTask.comments) currentTask.comments = [];
+      
+      const now = new Date();
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const timeString = `${now.getHours() > 12 ? now.getHours() - 12 : now.getHours()}:${now.getMinutes() < 10 ? '0' + now.getMinutes() : now.getMinutes()} ${now.getHours() >= 12 ? 'PM' : 'AM'}`;
+      const formattedDate = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}, ${timeString}`;
+
+      const newComment = {
+        id: Date.now(),
+        user: "Sarah Smith",
+        avatar: "SS",
+        color: "bg-green-600",
+        text: text,
+        time: formattedDate
+      };
+      
+      currentTask.comments.push(newComment);
+      window.PM_DB.saveTask(currentTask);
+      window.PM_DB.addActivity(`commented on task "${currentTask.title}"`, text);
+
+      input.value = "";
+      renderTaskDetails();
+    }
+
+    function openEditModal() {
+      const members = window.PM_DB.getMembers();
+      const selectAssignee = document.getElementById("modal-task-assignee");
+      selectAssignee.innerHTML = "";
+      members.forEach(m => {
+        selectAssignee.innerHTML += `<option value="${m.name}">${m.name}</option>`;
+      });
+
+      document.getElementById("modal-task-title").value = currentTask.title;
+      document.getElementById("modal-task-desc").value = currentTask.description || "";
+      document.getElementById("modal-task-assignee").value = currentTask.assignee;
+      document.getElementById("modal-task-status").value = currentTask.status;
+      document.getElementById("modal-task-priority").value = currentTask.priority;
+      document.getElementById("modal-task-duedate").value = currentTask.dueDate;
+
+      document.getElementById("task-modal").classList.remove("hidden");
+    }
+
+    function closeEditModal() {
+      document.getElementById("task-modal").classList.add("hidden");
+    }
+
+    function handleTaskSubmit(e) {
+      e.preventDefault();
+      
+      currentTask.title = document.getElementById("modal-task-title").value;
+      currentTask.description = document.getElementById("modal-task-desc").value;
+      currentTask.assignee = document.getElementById("modal-task-assignee").value;
+      currentTask.status = document.getElementById("modal-task-status").value;
+      currentTask.priority = document.getElementById("modal-task-priority").value;
+      currentTask.dueDate = document.getElementById("modal-task-duedate").value;
+
+      if (currentTask.status === "Completed") {
+        currentTask.progress = 100;
+      }
+
+      window.PM_DB.saveTask(currentTask);
+      window.PM_DB.addActivity(`modified details for task "${currentTask.title}"`);
+      
+      closeEditModal();
+      renderTaskDetails();
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      renderTaskDetails();
+    });
+  </script>
+</body>
+</html>

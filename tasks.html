@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Matrix - Project Management Dashboard</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0f6ff',
+              100: '#e0edff',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-[#f8fafc] text-slate-800 min-h-screen flex">
+
+  <!-- LEFT SIDEBAR -->
+  <aside class="w-64 bg-[#1e1e2d] text-slate-300 flex flex-col h-screen sticky top-0 flex-shrink-0">
+    <!-- Sidebar Header -->
+    <div class="p-6 flex items-center gap-3 border-b border-slate-700/30">
+      <div class="bg-blue-600 text-white p-2 rounded-lg flex items-center justify-center">
+        <i data-lucide="layers" class="w-5 h-5"></i>
+      </div>
+      <span class="font-bold text-lg tracking-wider text-white">Grid</span>
+    </div>
+
+    <!-- Navigation links -->
+    <nav class="p-4 space-y-1 flex-1">
+      <a href="index.html" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-all duration-155">
+        <i data-lucide="folder-kanban" class="w-4 h-4 text-slate-400"></i>
+        <span class="text-sm font-medium">Projects Portal</span>
+      </a>
+      <a href="tasks.html" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-blue-600 text-white transition-all duration-155">
+        <i data-lucide="list-todo" class="w-4 h-4"></i>
+        <span class="text-sm font-medium">Task Matrix</span>
+      </a>
+      <a href="task-details.html" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-all duration-155">
+        <i data-lucide="info" class="w-4 h-4 text-slate-400"></i>
+        <span class="text-sm font-medium">Task Details</span>
+      </a>
+      <a href="#" onclick="window.location.reload()" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-rose-400 transition-all duration-155 mt-8">
+        <i data-lucide="log-out" class="w-4 h-4 text-slate-400"></i>
+        <span class="text-sm font-medium">Logout</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- MAIN CONTAINER -->
+  <main class="flex-1 flex flex-col min-h-screen">
+    <!-- Header -->
+    <header class="p-8 pb-4 flex justify-between items-center bg-white border-b border-slate-200">
+      <div>
+        <h1 class="text-2xl font-bold tracking-tight text-slate-900">Task Matrix</h1>
+      </div>
+      <button onclick="openTaskModal()" class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl font-medium shadow-sm transition-all duration-150">
+        <i data-lucide="plus" class="w-4 h-4"></i>
+        <span class="text-sm">New Task</span>
+      </button>
+    </header>
+
+    <!-- Toolbar Filters -->
+    <section class="px-8 py-4 flex flex-wrap items-center gap-4">
+      <!-- Search Input -->
+      <div class="relative w-full max-w-xs">
+        <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+          <i data-lucide="search" class="w-4 h-4"></i>
+        </span>
+        <input type="text" id="search-input" oninput="renderTasks()" placeholder="Search tasks..." class="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm bg-white">
+      </div>
+
+      <!-- Project Filter -->
+      <select id="filter-project" onchange="renderTasks()" class="border border-slate-200 rounded-xl px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 font-medium text-slate-600">
+        <option value="All">All Projects</option>
+        <!-- Populated dynamically -->
+      </select>
+
+      <!-- Status Filter -->
+      <select id="filter-status" onchange="renderTasks()" class="border border-slate-200 rounded-xl px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 font-medium text-slate-600">
+        <option value="All">All Statuses</option>
+        <option value="Pending">Pending</option>
+        <option value="In Progress">In Progress</option>
+        <option value="Completed">Completed</option>
+      </select>
+    </section>
+
+    <!-- Main Tasks Table -->
+    <section class="px-8 pb-12 flex-1">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-[#f8fafc] border-b border-slate-200 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                <th class="px-6 py-4">Task Name</th>
+                <th class="px-6 py-4">Project</th>
+                <th class="px-6 py-4">Assignee</th>
+                <th class="px-6 py-4">Status</th>
+                <th class="px-6 py-4">Priority</th>
+                <th class="px-6 py-4">Due Date</th>
+                <th class="px-6 py-4 text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody id="tasks-table-body" class="divide-y divide-slate-100 text-sm">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ADD / EDIT TASK MODAL -->
+  <div id="task-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeTaskModal()"></div>
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-200 max-w-md w-full overflow-hidden z-10 animate-in fade-in zoom-in duration-200">
+      <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center">
+        <h3 id="modal-title" class="font-bold text-slate-800 text-lg">Add New Task</h3>
+        <button onclick="closeTaskModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-50">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <form id="task-form" onsubmit="handleTaskSubmit(event)" class="p-6 space-y-4">
+        <input type="hidden" id="task-id">
+        
+        <div>
+          <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Task Title</label>
+          <input type="text" id="task-title" required class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm bg-white" placeholder="e.g. Design Dashboard UI">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Description</label>
+          <textarea id="task-desc" rows="3" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm bg-white" placeholder="Provide general task guidelines..."></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Project</label>
+            <select id="task-project" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm bg-white text-slate-700">
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Assignee Name</label>
+            <input type="text" id="task-assignee" required class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm bg-white" placeholder="e.g. John Doe">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Status</label>
+            <select id="task-status" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm bg-white">
+              <option value="Pending">Pending</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Priority</label>
+            <select id="task-priority" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm bg-white">
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Due Date</label>
+            <input type="date" id="task-duedate" required class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm bg-white">
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-slate-100 flex justify-end gap-3">
+          <button type="button" onclick="closeTaskModal()" class="px-4 py-2.5 text-slate-500 font-semibold text-sm hover:bg-slate-50 rounded-xl border border-slate-200">Cancel</button>
+          <button type="submit" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl shadow-sm">Save Task</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="db.js"></script>
+  <script>
+    function formatDate(dateStr) {
+      if (!dateStr) return "";
+      const date = new Date(dateStr);
+      if (isNaN(date.getTime())) return dateStr;
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+    }
+
+    function getAssigneeAvatar(name) {
+      if (!name) return { initials: "?", color: "bg-slate-400" };
+      const initials = name.split(" ").map(n => n[0]).join("").toUpperCase().substring(0, 2);
+      const colors = ["bg-blue-600", "bg-green-600", "bg-indigo-600", "bg-purple-600", "bg-rose-600", "bg-amber-600"];
+      let hash = 0;
+      for (let i = 0; i < name.length; i++) {
+        hash = name.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      const colorIndex = Math.abs(hash) % colors.length;
+      return { initials, color: colors[colorIndex] };
+    }
+
+    function populateDropdowns() {
+      const projects = window.PM_DB.getProjects();
+      const projSelect = document.getElementById("task-project");
+      projSelect.innerHTML = "";
+      projects.forEach(p => {
+        projSelect.innerHTML += `<option value="${p.id}">${p.name}</option>`;
+      });
+
+      const filterProjSelect = document.getElementById("filter-project");
+      filterProjSelect.innerHTML = `<option value="All">All Projects</option>`;
+      projects.forEach(p => {
+        filterProjSelect.innerHTML += `<option value="${p.id}">${p.name}</option>`;
+      });
+    }
+
+    function renderTasks() {
+      const tasks = window.PM_DB.getTasks();
+
+      const searchVal = document.getElementById("search-input").value.toLowerCase();
+      const projectFilter = document.getElementById("filter-project").value;
+      const statusFilter = document.getElementById("filter-status").value;
+
+      const tbody = document.getElementById("tasks-table-body");
+      tbody.innerHTML = "";
+
+      const filtered = tasks.filter(t => {
+        const matchesSearch = t.title.toLowerCase().includes(searchVal) || (t.description && t.description.toLowerCase().includes(searchVal));
+        const matchesProj = projectFilter === "All" || t.projectId === projectFilter;
+        const matchesStatus = statusFilter === "All" || t.status === statusFilter;
+        return matchesSearch && matchesProj && matchesStatus;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="px-6 py-12 text-center text-slate-400">
+              <div class="flex flex-col items-center justify-center py-4">
+                <i data-lucide="check-square" class="w-8 h-8 text-slate-350 mb-2"></i>
+                <span class="text-sm font-semibold text-slate-500">No tasks found.</span>
+                <span class="text-xs text-slate-400 mt-1">Please ensure projects exist first, then click "+ New Task" above.</span>
+              </div>
+            </td>
+          </tr>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      filtered.forEach(t => {
+        let statusClass = "badge-in-progress";
+        if (t.status === "Completed") statusClass = "badge-completed";
+        if (t.status === "Pending") statusClass = "badge-awaiting-review";
+
+        let priorityClass = "badge-priority-low";
+        if (t.priority === "High") priorityClass = "badge-priority-high";
+        if (t.priority === "Medium") priorityClass = "badge-priority-med";
+
+        const mInfo = getAssigneeAvatar(t.assignee);
+
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-50/50 transition-colors">
+            <td class="px-6 py-4">
+              <a href="task-details.html?id=${t.id}" class="font-semibold text-blue-600 hover:text-blue-700 hover:underline block max-w-xs truncate" title="Inspect details">
+                ${t.title}
+              </a>
+            </td>
+            <td class="px-6 py-4 text-slate-500 font-medium">${t.projectName}</td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-2">
+                <div class="w-7 h-7 rounded-full ${mInfo.color} text-white text-[10px] font-bold flex items-center justify-center">
+                  ${mInfo.initials}
+                </div>
+                <span class="font-medium text-slate-700">${t.assignee}</span>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <span class="px-2.5 py-1 text-xs font-semibold rounded-full ${statusClass}">${t.status}</span>
+            </td>
+            <td class="px-6 py-4">
+              <span class="px-2.5 py-1 text-xs font-semibold rounded-full ${priorityClass}">${t.priority}</span>
+            </td>
+            <td class="px-6 py-4 text-slate-500 font-medium">${formatDate(t.dueDate)}</td>
+            <td class="px-6 py-4">
+              <div class="flex items-center justify-center gap-2">
+                <button onclick="editTask('${t.id}')" class="p-1.5 text-slate-400 hover:text-blue-600 rounded-md hover:bg-blue-50 transition-colors">
+                  <i data-lucide="pencil" class="w-4 h-4"></i>
+                </button>
+                <button onclick="deleteTask('${t.id}')" class="p-1.5 text-slate-400 hover:text-rose-600 rounded-md hover:bg-rose-50 transition-colors">
+                  <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+
+      lucide.createIcons();
+    }
+
+    function openTaskModal() {
+      const projects = window.PM_DB.getProjects();
+      if (projects.length === 0) {
+        alert("Please create a Project first before adding tasks!");
+        return;
+      }
+      
+      document.getElementById("modal-title").innerText = "Add New Task";
+      document.getElementById("task-id").value = "";
+      document.getElementById("task-form").reset();
+      populateDropdowns();
+      document.getElementById("task-modal").classList.remove("hidden");
+    }
+
+    function editTask(id) {
+      const t = window.PM_DB.getTaskById(id);
+      if (!t) return;
+      populateDropdowns();
+
+      document.getElementById("modal-title").innerText = "Edit Task";
+      document.getElementById("task-id").value = t.id;
+      document.getElementById("task-title").value = t.title;
+      document.getElementById("task-desc").value = t.description || "";
+      document.getElementById("task-project").value = t.projectId;
+      document.getElementById("task-assignee").value = t.assignee;
+      document.getElementById("task-status").value = t.status;
+      document.getElementById("task-priority").value = t.priority;
+      document.getElementById("task-duedate").value = t.dueDate;
+
+      document.getElementById("task-modal").classList.remove("hidden");
+    }
+
+    function closeTaskModal() {
+      document.getElementById("task-modal").classList.add("hidden");
+    }
+
+    function handleTaskSubmit(e) {
+      e.preventDefault();
+      const id = document.getElementById("task-id").value;
+      const title = document.getElementById("task-title").value;
+      const description = document.getElementById("task-desc").value;
+      const projectId = document.getElementById("task-project").value;
+      const assignee = document.getElementById("task-assignee").value;
+      const status = document.getElementById("task-status").value;
+      const priority = document.getElementById("task-priority").value;
+      const dueDate = document.getElementById("task-duedate").value;
+
+      const project = window.PM_DB.getProjectById(projectId);
+      const projectName = project ? project.name : "Unassigned";
+
+      const progress = (status === "Completed") ? 100 : (status === "Pending" ? 0 : 50);
+
+      const taskToSave = { title, description, projectId, projectName, assignee, status, priority, dueDate, progress };
+
+      if (id) {
+        taskToSave.id = id;
+        window.PM_DB.saveTask(taskToSave);
+        window.PM_DB.addActivity(`updated task "${title}"`);
+      } else {
+        window.PM_DB.saveTask(taskToSave);
+        window.PM_DB.addActivity(`created task "${title}" under "${projectName}"`);
+      }
+
+      closeTaskModal();
+      renderTasks();
+    }
+
+    function deleteTask(id) {
+      const t = window.PM_DB.getTaskById(id);
+      if (!t) return;
+      if (confirm(`Are you sure you want to delete task "${t.title}"?`)) {
+        window.PM_DB.deleteTask(id);
+        window.PM_DB.addActivity(`deleted task "${t.title}"`);
+        renderTasks();
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      populateDropdowns();
+      renderTasks();
+    });
+  </script>
+</body>
+</html>
