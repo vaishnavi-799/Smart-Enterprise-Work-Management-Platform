@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WorkFlow Pro - Profile</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brandDark: '#0F1020',
+            brandBlue: '#4F46E5',
+            brandBg: '#F8FAFC',
+            textDark: '#0F172A'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-brandBg font-sans antialiased text-slate-800">
+
+  <div class="flex min-h-screen">
+    
+    <aside class="w-64 bg-brandDark text-gray-400 flex flex-col justify-between p-4 fixed h-full z-10">
+      <div>
+        <div class="flex items-center gap-3 px-2 py-4 mb-6">
+          <div class="bg-brandBlue p-2 rounded-lg text-white flex items-center justify-center w-9 h-9">
+            <i class="fa-solid fa-cubes text-base"></i>
+          </div>
+          <span class="text-white font-bold text-lg tracking-wide">WorkFlow Pro</span>
+        </div>
+
+        <nav class="space-y-1">
+          <a href="dashboard.html" class="flex items-center gap-3 px-3 py-3 rounded-xl transition hover:bg-white/5 text-sm font-medium">
+            <i class="fa-solid fa-chart-pie w-5 text-center"></i>
+            <span>Dashboard</span>
+          </a>
+          <a href="projects.html" class="flex items-center gap-3 px-3 py-3 rounded-xl transition hover:bg-white/5 text-sm font-medium">
+            <i class="fa-solid fa-folder w-5 text-center"></i>
+            <span>Projects</span>
+          </a>
+          <a href="tasks.html" class="flex items-center gap-3 px-3 py-3 rounded-xl transition hover:bg-white/5 text-sm font-medium">
+            <i class="fa-solid fa-list-check w-5 text-center"></i>
+            <span>Tasks</span>
+          </a>
+          <a href="task-details.html" class="flex items-center gap-3 px-3 py-3 rounded-xl transition hover:bg-white/5 text-sm font-medium">
+            <i class="fa-solid fa-circle-info w-5 text-center"></i>
+            <span>Task Details</span>
+          </a>
+          <a href="profile.html" class="flex items-center gap-3 px-3 py-3 rounded-xl bg-brandBlue text-white font-medium shadow-lg shadow-indigo-600/20 text-sm">
+            <i class="fa-solid fa-user w-5 text-center"></i>
+            <span>Profile</span>
+          </a>
+        </nav>
+      </div>
+
+      <a href="login.html" class="flex items-center gap-3 px-3 py-3 rounded-xl text-gray-400 hover:bg-red-900/20 hover:text-red-400 transition mb-4 text-sm font-medium">
+        <i class="fa-solid fa-right-from-bracket w-5 text-center"></i>
+        <span>Logout</span>
+      </a>
+    </aside>
+
+    <main class="flex-1 ml-64 p-10">
+      
+      <header class="flex justify-between items-center mb-10">
+        <div>
+          <h1 class="text-3xl font-bold text-textDark tracking-tight">Account Settings</h1>
+          <p class="text-sm text-gray-500 mt-1">Manage your profile details, active teams, and project schedules.</p>
+        </div>
+        
+        <div class="flex items-center gap-3 bg-white py-2 px-4 rounded-full shadow-sm border border-slate-100">
+          <img 
+            src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=256&auto=format&fit=crop" 
+            alt="Avatar" 
+            class="w-8 h-8 rounded-full object-cover border border-indigo-100"
+          >
+          <div class="text-left">
+            <p id="nav-user-name" class="text-xs font-bold leading-3 text-slate-800">John Doe</p>
+            <span class="text-[10px] text-slate-400 font-medium">Project Manager</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <div class="lg:col-span-1 bg-white rounded-2xl border border-slate-100 p-6 shadow-sm flex flex-col items-center text-center self-start">
+          <div class="relative group mb-4">
+            <img 
+              src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=256&auto=format&fit=crop" 
+              alt="Profile Big" 
+              class="w-28 h-28 rounded-full object-cover ring-4 ring-slate-50 shadow-inner"
+            >
+            <div class="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-xs font-medium cursor-pointer transition-all duration-200">
+              Change Photo
+            </div>
+          </div>
+
+          <h3 id="card-user-name" class="text-xl font-bold text-slate-800">John Doe</h3>
+          <p class="text-sm text-indigo-600 font-medium tracking-wide mt-0.5">Project Manager</p>
+
+          <hr class="w-full my-6 border-slate-100">
+
+          <div class="w-full text-left">
+            
+            <div id="profile-view-mode" class="space-y-4">
+              <div>
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 block mb-1">Email Address</span>
+                <div class="flex items-center gap-2 text-slate-700 bg-slate-50 px-3 py-2.5 rounded-xl border border-slate-100 text-sm">
+                  <i class="fa-regular fa-envelope text-slate-400"></i>
+                  <span id="display-email" class="truncate font-medium">john.doe@workflowpro.com</span>
+                </div>
+              </div>
+              <div>
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 block mb-1">Assigned Team</span>
+                <div class="flex items-center gap-2 text-slate-700 bg-slate-50 px-3 py-2.5 rounded-xl border border-slate-100 text-sm">
+                  <i class="fa-solid fa-users text-slate-400"></i>
+                  <span class="font-medium">Alpha Product Core</span>
+                </div>
+              </div>
+              <button 
+                id="btn-edit"
+                class="w-full mt-2 flex items-center justify-center gap-2 bg-slate-900 text-white font-medium py-2.5 px-4 rounded-xl hover:bg-slate-800 transition text-sm shadow-sm"
+              >
+                <i class="fa-regular fa-pen-to-square text-xs"></i> Edit Identity
+              </button>
+            </div>
+
+            <form id="profile-edit-mode" class="space-y-4 hidden">
+              <div>
+                <label class="text-xs font-semibold uppercase tracking-wider text-slate-400 block mb-1">Full Name</label>
+                <input 
+                  type="text" 
+                  id="input-name"
+                  class="w-full bg-white border-2 border-indigo-500 focus:outline-none px-3 py-2 rounded-xl text-sm font-medium text-slate-800"
+                  required 
+                >
+              </div>
+              <div>
+                <label class="text-xs font-semibold uppercase tracking-wider text-slate-400 block mb-1">Email Address</label>
+                <input 
+                  type="email" 
+                  id="input-email"
+                  class="w-full bg-white border-2 border-indigo-500 focus:outline-none px-3 py-2 rounded-xl text-sm font-medium text-slate-800"
+                  required 
+                >
+              </div>
+              <div class="flex gap-2 pt-2">
+                <button 
+                  type="submit"
+                  class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2 rounded-xl transition text-sm flex items-center justify-center gap-1 shadow-sm"
+                >
+                  <i class="fa-solid fa-check text-xs"></i> Save
+                </button>
+                <button 
+                  type="button" 
+                  id="btn-cancel"
+                  class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium py-2 rounded-xl transition text-sm flex items-center justify-center gap-1"
+                >
+                  <i class="fa-solid fa-xmark text-xs"></i> Cancel
+                </button>
+              </div>
+            </form>
+
+          </div>
+        </div>
+
+        <div class="lg:col-span-2 space-y-6">
+          
+          <div class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
+            <div class="flex items-center gap-2 mb-4">
+              <div class="p-1.5 bg-blue-50 text-blue-600 rounded-lg">
+                <i class="fa-solid fa-briefcase"></i>
+              </div>
+              <h4 class="text-lg font-bold text-slate-800">My Projects</h4>
+            </div>
+            <div class="space-y-3">
+              <div class="flex items-center justify-between border border-slate-100 p-4 rounded-xl bg-slate-50/50">
+                <div>
+                  <h5 class="font-semibold text-slate-800 text-sm">Workflow Pro Platform</h5>
+                  <p class="text-xs text-slate-400 mt-0.5">Role: Lead</p>
+                </div>
+                <span class="bg-blue-50 border border-blue-200 text-blue-600 px-3 py-1 rounded-full text-xs font-semibold tracking-wide shadow-sm">
+                  In Progress
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
+            <div class="flex items-center gap-2 mb-4">
+              <div class="p-1.5 bg-amber-50 text-amber-600 rounded-lg">
+                <i class="fa-regular fa-calendar-days"></i>
+              </div>
+              <h4 class="text-lg font-bold text-slate-800">Approaching Deadlines</h4>
+            </div>
+            <div class="space-y-3">
+              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between border border-slate-100 p-4 rounded-xl bg-slate-50/50 gap-2">
+                <div class="flex items-start gap-3">
+                  <div class="w-2 h-2 rounded-full bg-rose-500 mt-1.5 animate-pulse"></div>
+                  <div>
+                    <h5 class="font-semibold text-slate-800 text-sm">Phase 1 Core Dashboard Deliverable</h5>
+                    <p class="text-xs text-slate-400 mt-0.5 flex items-center gap-1">
+                      <i class="fa-regular fa-calendar text-[11px]"></i> Target: July 25, 2026
+                    </p>
+                  </div>
+                </div>
+                <span class="bg-rose-50 border border-rose-100 text-rose-600 px-2.5 py-0.5 rounded-md text-xs font-medium self-start sm:self-center">
+                  High Priority
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
+            <div class="flex items-center gap-2 mb-4">
+              <div class="p-1.5 bg-emerald-50 text-emerald-600 rounded-lg">
+                <i class="fa-regular fa-square-check"></i>
+              </div>
+              <h4 class="text-lg font-bold text-slate-800">Active Task Board</h4>
+            </div>
+            <div class="space-y-3">
+              <div class="flex items-center justify-between border border-slate-100 p-4 rounded-xl hover:bg-slate-50 transition duration-150">
+                <div class="flex items-center gap-3">
+                  <input 
+                    type="checkbox" 
+                    class="w-4 h-4 text-brandBlue border-slate-300 rounded focus:ring-brandBlue cursor-pointer" 
+                    disabled
+                  >
+                  <span class="text-sm font-medium text-slate-700">dh</span>
+                </div>
+                <span class="text-xs font-semibold bg-blue-50 text-blue-600 border border-blue-100 px-2.5 py-1 rounded-md">
+                  In Progress
+                </span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Initial Dynamic User Object data (simulation of signup variables)
+    const userData = {
+      name: "John Doe",
+      email: "john.doe@workflowpro.com"
+    };
+
+    // DOM Elements Selector
+    const viewModeContainer = document.getElementById('profile-view-mode');
+    const editModeContainer = document.getElementById('profile-edit-mode');
+    
+    const displayEmail = document.getElementById('display-email');
+    const cardUserName = document.getElementById('card-user-name');
+    const navUserName = document.getElementById('nav-user-name');
+
+    const inputName = document.getElementById('input-name');
+    const inputEmail = document.getElementById('input-email');
+
+    const btnEdit = document.getElementById('btn-edit');
+    const btnCancel = document.getElementById('btn-cancel');
+
+    // Switch View To Form Editor Mode
+    btnEdit.addEventListener('click', () => {
+      inputName.value = userData.name;
+      inputEmail.value = userData.email;
+      
+      viewModeContainer.classList.add('hidden');
+      editModeContainer.classList.remove('hidden');
+    });
+
+    // Close / Cancel Editor
+    btnCancel.addEventListener('click', () => {
+      viewModeContainer.classList.remove('hidden');
+      editModeContainer.classList.add('hidden');
+    });
+
+    // Handle Form Submit (Dynamically mutates text nodes across screen)
+    editModeContainer.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      // Update data state values
+      userData.name = inputName.value;
+      userData.email = inputEmail.value;
+
+      // Dynamically re-render UI elements cleanly
+      cardUserName.textContent = userData.name;
+      navUserName.textContent = userData.name;
+      displayEmail.textContent = userData.email;
+
+      // Close the form panel layout view back down to default
+      viewModeContainer.classList.remove('hidden');
+      editModeContainer.classList.add('hidden');
+    });
+  </script>
+</body>
+</html>

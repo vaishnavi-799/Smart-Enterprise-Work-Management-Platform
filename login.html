@@ -3,53 +3,288 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex items-center justify-center px-4">
+    <title>WorkFlow Pro - Login</title>
+    
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-    <div class="w-full max-w-md space-y-8 bg-white p-8 rounded-xl shadow-xl border border-slate-200">
-        <div class="text-center">
-            <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 text-2xl">
-                <i class="fa-solid fa-shield-halved"></i>
+        body {
+            background-color: #f3f4f9;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* Container Dashboard Box */
+        .login-container {
+            background-color: #f8fafc;
+            width: 100%;
+            max-width: 1000px;
+            height: 650px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            display: flex;
+            overflow: hidden;
+            padding: 40px;
+        }
+
+        /* Left Side Layout */
+        .form-section {
+            flex: 1.1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding-right: 20px;
+        }
+
+        /* Brand Header */
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-text h1 {
+            font-size: 1.35rem;
+            color: #1e293b;
+            font-weight: 700;
+        }
+
+        .brand-text p {
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+
+        /* Card Panel styling */
+        .login-card {
+            background-color: #ffffff;
+            border-radius: 16px;
+            padding: 35px 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+            border: 1px solid #f1f5f9;
+            width: 100%;
+            max-width: 420px;
+            margin: auto 0;
+        }
+
+        .login-card h2 {
+            text-align: center;
+            color: #0f172a;
+            font-size: 1.5rem;
+            margin-bottom: 6px;
+        }
+
+        .login-card .subtitle {
+            text-align: center;
+            color: #64748b;
+            font-size: 0.85rem;
+            margin-bottom: 28px;
+        }
+
+        /* Inputs fields and Forms */
+        .input-group {
+            margin-bottom: 18px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: #475569;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        /* Relative wrapper container for password input + button */
+        .password-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #334155;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        /* Make sure long text doesn't run under the eye button */
+        .password-wrapper input {
+            padding-right: 45px;
+        }
+
+        .input-group input::placeholder {
+            color: #cbd5e1;
+        }
+
+        .input-group input:focus {
+            border-color: #6366f1;
+        }
+
+       .password-wrapper input {
+    padding-right: 45px;
+}
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background-color: #6366f1;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            margin-bottom: 20px;
+        }
+
+        .login-btn:hover {
+            background-color: #4f46e5;
+        }
+
+        .register-text {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        .register-text a {
+            color: #6366f1;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .register-text a:hover {
+            text-decoration: underline;
+        }
+
+        /* Right Side Layout - Illustration Section */
+        .illustration-section {
+            flex: 0.9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .promo-img {
+            max-width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        /* Responsive Rules for Small Devices */
+        @media (max-width: 850px) {
+            .illustration-section {
+                display: none;
+            }
+            .login-container {
+                max-width: 500px;
+                justify-content: center;
+                height: auto;
+            }
+            .form-section {
+                padding-right: 0;
+                gap: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="form-section">
+            <div class="brand">
+                <div class="logo-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div class="brand-text">
+                    <h1>WorkFlow Pro</h1>
+                    <p>Enterprise Work Management System</p>
+                </div>
             </div>
-            <h2 class="mt-6 text-3xl font-bold tracking-tight text-slate-900">Sign In</h2>
-            <p class="mt-2 text-sm text-slate-500">Access your workspace credentials</p>
+
+            <div class="login-card">
+                <h2>Welcome Back</h2>
+                <p class="subtitle">Login to your account</p>
+
+                <form id="loginForm">
+                    <div class="input-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="Enter your email" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="password">Password</label>
+                       <div class="password-wrapper">
+    <input type="password" id="password" placeholder="Enter your password" required>
+</div>
+                    </div>
+
+                    <div id="loginMessage" style="color: #dc2626; font-size: 0.85rem; margin-bottom: 12px; min-height: 1.2rem;"></div>
+                    <button type="submit" class="login-btn">Login</button>
+                </form>
+
+                <p class="register-text">Don't have an account? <a href="register.html">Register</a></p>
+            </div>
         </div>
-        
-        <form class="mt-8 space-y-6" onsubmit="handleLogin(event)">
-            <div class="space-y-4 rounded-md">
-                <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Email Address</label>
-                    <input id="login-email" type="email" required class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-slate-900 placeholder-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" placeholder="name@company.com">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Password</label>
-                    <input id="login-password" type="password" required class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-slate-900 placeholder-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" placeholder="••••••••">
-                </div>
-            </div>
-            <button type="submit" class="w-full rounded-lg bg-emerald-600 py-3 text-sm font-semibold text-white hover:bg-emerald-700 transition duration-200 shadow-lg shadow-emerald-600/10">Authorize & Enter</button>
-        </form>
-        <p class="text-center text-sm text-slate-500">New deployment? <a href="register.html" class="font-medium text-emerald-600 hover:text-emerald-700">Create an account</a></p>
+
+        <div class="illustration-section">
+            <img src="https://i.pinimg.com/1200x/32/45/21/32452186ca315d2100df1c053cf7cee7.jpg" alt="Workflow Dashboard Illustration" class="promo-img">
+        </div>
     </div>
 
     <script>
-        function handleLogin(e) {
-            e.preventDefault();
-            const emailInput = document.getElementById('login-email').value;
-            const passwordInput = document.getElementById('login-password').value;
-            
-            const savedUser = JSON.parse(localStorage.getItem('enterpriseUser'));
+      
 
-            // Check matching data state
-            if (savedUser && savedUser.email === emailInput && savedUser.password === passwordInput) {
-                localStorage.setItem('isLoggedIn', 'true');
+        const form = document.getElementById('loginForm');
+        const messageBox = document.getElementById('loginMessage');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            messageBox.textContent = '';
+
+            try {
+                const response = await fetch('http://localhost:5000/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || 'Login failed');
+                }
+
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('user', JSON.stringify(data.user));
                 window.location.href = 'dashboard.html';
-            } else {
-                alert("Error: Invalid Email or Password configuration.");
+            } catch (error) {
+                messageBox.textContent = error.message || 'Unable to sign in right now.';
             }
-        }
+        });
     </script>
 </body>
 </html>
