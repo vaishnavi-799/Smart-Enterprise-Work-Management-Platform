@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <link rel="stylesheet" 
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+</head>
+
+
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex items-center justify-center px-4">
+
+
+<div class="w-full max-w-md space-y-8 bg-white p-8 rounded-xl shadow-xl border border-slate-200">
+
+
+    <div class="text-center">
+
+        <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 text-blue-600 text-2xl">
+            <i class="fa-solid fa-cubes"></i>
+        </div>
+
+
+        <h2 class="mt-6 text-3xl font-bold tracking-tight text-slate-900">
+            Create Account
+        </h2>
+
+
+        <p class="mt-2 text-sm text-slate-500">
+            Get started with your collaborative workspace
+        </p>
+
+    </div>
+
+    
+
+    <form class="mt-8 space-y-6" onsubmit="handleRegister(event)">
+
+
+        <div class="space-y-4 rounded-md">
+
+
+            <div>
+
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">
+                    Full Name
+                </label>
+
+
+                <input 
+                id="reg-name" 
+                type="text" 
+                required
+                class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                placeholder="John Doe">
+
+            </div>
+
+
+
+            <div>
+
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">
+                    Corporate Email
+                </label>
+
+
+                <input 
+                id="reg-email" 
+                type="email" 
+                required
+                class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                placeholder="name@company.com">
+
+            </div>
+
+
+
+
+            <div>
+
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">
+                    Password
+                </label>
+
+
+                <input 
+                id="reg-password" 
+                type="password" 
+                required
+                class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                placeholder="••••••••">
+
+            </div>
+
+
+        </div>
+
+
+
+        <div id="registerMessage"
+        class="text-center text-sm text-red-600">
+        </div>
+
+
+
+        <button 
+        type="submit"
+        class="w-full rounded-lg bg-blue-600 py-3 text-sm font-semibold text-white hover:bg-blue-700 transition duration-200 shadow-lg shadow-blue-600/10">
+
+            Register Platform
+
+        </button>
+
+
+    </form>
+
+
+
+
+    <p class="text-center text-sm text-slate-500">
+
+        Already registered?
+
+        <a href="login.html" 
+        class="font-medium text-blue-600 hover:text-blue-700">
+
+            Sign in
+
+        </a>
+
+    </p>
+
+
+
+</div>
+
+
+
+
+
+<script>
+
+
+async function handleRegister(e){
+
+
+    e.preventDefault();
+
+
+
+    const messageBox =
+    document.getElementById("registerMessage");
+
+
+
+    const userData = {
+
+
+        name:
+        document.getElementById("reg-name").value.trim(),
+
+
+        email:
+        document.getElementById("reg-email").value.trim(),
+
+
+        password:
+        document.getElementById("reg-password").value
+
+
+    };
+
+
+
+    messageBox.innerHTML="";
+
+
+
+    try{
+
+
+        const response =
+        await fetch(
+            "http://localhost:5000/api/auth/register",
+            {
+
+                method:"POST",
+
+                headers:{
+
+                    "Content-Type":"application/json"
+
+                },
+
+
+                body:
+                JSON.stringify(userData)
+
+            }
+        );
+
+
+
+        const data =
+        await response.json();
+
+
+
+
+        if(!response.ok){
+
+
+            throw new Error(
+                data.message || "Registration failed"
+            );
+
+
+        }
+
+
+
+
+        alert("Registration successful");
+
+
+        window.location.href="login.html";
+
+
+
+    }
+
+
+    catch(error){
+
+
+        messageBox.innerHTML =
+        error.message;
+
+
+    }
+
+
+}
+
+
+
+</script>
+
+
+
+</body>
+
+</html>

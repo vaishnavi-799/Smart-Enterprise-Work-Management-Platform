@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Matrix - Project Management Dashboard</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0f6ff',
+              100: '#e0edff',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .sidebar {
+            width: 260px;
+            background-color: #0f1423; 
+            color: #94a3b8;
+            display: flex;
+            flex-direction: column;
+            padding: 24px 16px;
+            justify-content: space-between;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-left: 12px;
+            margin-bottom: 40px;
+        }
+
+        .sidebar-brand i {
+            color: #6366f1; 
+            font-size: 1.5rem;
+        }
+
+        .sidebar-brand h1 {
+            color: #ffffff;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex-grow: 1;
+        }
+
+        .menu-item a {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 14px 16px;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.95rem;
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .menu-item a:hover {
+            color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .menu-item.active a {
+            background-color: #4f46e5;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+
+  </style>
+</head>
+<body class="bg-[#f8fafc] text-slate-800 min-h-screen flex">
+
+  <nav class="sidebar">
+        <div class="top-group">
+            <div class="sidebar-brand">
+                <i class="fa-solid fa-cubes"></i>
+                <h1>WorkFlow Pro</h1>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li class="menu-item ">
+                    <a href="dashboard.html"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+                </li>
+                <li class="menu-item ">
+                    <a href="projects.html"><i class="fa-solid fa-folder"></i> Projects</a>
+                </li>
+                <li class="menu-item active">
+                    <a href="tasks.html"><i class="fa-solid fa-list-check"></i> Tasks</a>
+                </li>
+                <li class="menu-item">
+                    <a href="task-details.html"><i class="fa-solid fa-list-check"></i> Task Details</a>
+                </li>
+               
+                <li class="menu-item">
+                    <a href="profile.html"><i class="fa-solid fa-user"></i> Profile</a>
+                </li>
+            </ul>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li class="menu-item">
+                <a href="login.html" onclick="alert('Logging out...')"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+            </li>
+        </ul>
+    </nav>
+
+  <!-- MAIN CONTAINER -->
+  <main class="flex-1 flex flex-col min-h-screen">
+    <!-- Header -->
+    <header class="p-8 pb-4 flex justify-between items-center bg-white border-b border-slate-200">
+      <div>
+        <h1 class="text-2xl font-bold tracking-tight text-slate-900">Task Matrix</h1>
+      </div>
+      <button onclick="openTaskModal()" class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl font-medium shadow-sm transition-all duration-150">
+        <i data-lucide="plus" class="w-4 h-4"></i>
+        <span class="text-sm">New Task</span>
+      </button>
+    </header>
+
+    <!-- Toolbar Filters -->
+    <section class="px-8 py-4 flex flex-wrap items-center gap-4">
+      <!-- Search Input -->
+      <div class="relative w-full max-w-xs">
+        <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+          <i data-lucide="search" class="w-4 h-4"></i>
+        </span>
+        <input type="text" id="search-input" oninput="renderTasks()" placeholder="Search tasks..." class="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm bg-white">
+      </div>
+
+      <!-- Project Filter -->
+      <select id="filter-project" onchange="renderTasks()" class="border border-slate-200 rounded-xl px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 font-medium text-slate-600">
+        <option value="All">All Projects</option>
+        <!-- Populated dynamically -->
+      </select>
+
+      <!-- Status Filter -->
+      <select id="filter-status" onchange="renderTasks()" class="border border-slate-200 rounded-xl px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 font-medium text-slate-600">
+        <option value="All">All Statuses</option>
+        <option value="Pending">Pending</option>
+        <option value="In Progress">In Progress</option>
+        <option value="Completed">Completed</option>
+      </select>
+    </section>
+
+    <!-- Main Tasks Table -->
+    <section class="px-8 pb-12 flex-1">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-[#f8fafc] border-b border-slate-200 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                <th class="px-6 py-4">Task Name</th>
+                <th class="px-6 py-4">Project</th>
+                <th class="px-6 py-4">Assignee</th>
+                <th class="px-6 py-4">Status</th>
+                <th class="px-6 py-4">Priority</th>
+                <th class="px-6 py-4">Due Date</th>
+                <th class="px-6 py-4 text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody id="tasks-table-body" class="divide-y divide-slate-100 text-sm">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ADD / EDIT TASK MODAL -->
+  <div id="task-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeTaskModal()"></div>
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-200 max-w-md w-full overflow-hidden z-10 animate-in fade-in zoom-in duration-200">
+      <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center">
+        <h3 id="modal-title" class="font-bold text-slate-800 text-lg">Add New Task</h3>
+        <button onclick="closeTaskModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-50">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <form id="task-form" onsubmit="handleTaskSubmit(event)" class="p-6 space-y-4">
+        <input type="hidden" id="task-id">
+        
+        <div>
+          <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Task Title</label>
+          <input type="text" id="task-title" required class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm bg-white" placeholder="e.g. Design Dashboard UI">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Description</label>
+          <textarea id="task-desc" rows="3" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm bg-white" placeholder="Provide general task guidelines..."></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Project</label>
+            <select id="task-project" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm bg-white text-slate-700">
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Assignee Name</label>
+            <select 
+              id="task-assignee"
+              class="w-full border border-slate-200 rounded-xl px-4 py-2.5">
+
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Status</label>
+            <select id="task-status" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm bg-white">
+              <option value="Pending">Pending</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Priority</label>
+            <select id="task-priority" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm bg-white">
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Due Date</label>
+            <input type="date" id="task-duedate" required class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm bg-white">
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-slate-100 flex justify-end gap-3">
+          <button type="button" onclick="closeTaskModal()" class="px-4 py-2.5 text-slate-500 font-semibold text-sm hover:bg-slate-50 rounded-xl border border-slate-200">Cancel</button>
+          <button type="submit" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl shadow-sm">Save Task</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  
+  <script>
+ const API_URL = "http://localhost:5000/api";
+
+let projects = [];
+let tasks = [];
+let users = [];
+
+
+// ===============================
+// Date Formatter
+// ===============================
+
+function formatDate(dateStr){
+
+    if(!dateStr) return "";
+
+    return new Date(dateStr).toLocaleDateString(
+        "en-US",
+        {
+            day:"2-digit",
+            month:"short",
+            year:"numeric"
+        }
+    );
+}
+
+
+
+// ===============================
+// LOAD PROJECTS
+// ===============================
+
+async function loadProjects(){
+
+try{
+
+const res = await fetch(`${API_URL}/projects`);
+
+projects = await res.json();
+
+
+
+const taskProject =
+document.getElementById("task-project");
+
+
+taskProject.innerHTML="";
+
+
+
+projects.forEach(project=>{
+
+taskProject.innerHTML +=`
+
+<option value="${project._id}">
+${project.name}
+</option>
+
+`;
+
+});
+
+
+
+const filter =
+document.getElementById("filter-project");
+
+
+filter.innerHTML =
+`
+<option value="All">
+All Projects
+</option>
+`;
+
+
+
+projects.forEach(project=>{
+
+
+filter.innerHTML +=`
+
+<option value="${project._id}">
+${project.name}
+</option>
+
+`;
+
+});
+
+
+}
+
+catch(error){
+
+console.log(error);
+
+}
+
+}
+
+
+
+
+// ===============================
+// LOAD USERS
+// ===============================
+
+
+async function loadUsers(){
+
+try{
+
+
+const res =
+await fetch(`${API_URL}/users`);
+
+
+users =
+await res.json();
+
+
+
+const select =
+document.getElementById("task-assignee");
+
+
+
+select.innerHTML="";
+
+
+
+users.forEach(user=>{
+
+
+select.innerHTML +=`
+
+<option value="${user._id}">
+${user.name}
+</option>
+
+`;
+
+});
+
+
+}
+
+catch(error){
+
+console.log(error);
+
+}
+
+
+}
+
+
+
+
+
+
+// ===============================
+// LOAD TASKS
+// ===============================
+
+
+async function loadTasks(){
+
+try{
+
+
+const res =
+await fetch(`${API_URL}/tasks`);
+
+
+tasks =
+await res.json();
+
+
+
+renderTasks();
+
+
+}
+
+catch(error){
+
+console.log(error);
+
+}
+
+
+}
+
+
+
+
+
+// ===============================
+// DISPLAY TASKS
+// ===============================
+
+
+function renderTasks(){
+
+
+const tbody =
+document.getElementById("tasks-table-body");
+
+
+tbody.innerHTML="";
+
+
+
+const search =
+document.getElementById("search-input")
+.value
+.toLowerCase();
+
+
+
+const projectFilter =
+document.getElementById("filter-project")
+.value;
+
+
+
+const statusFilter =
+document.getElementById("filter-status")
+.value;
+
+
+
+const filtered =
+tasks.filter(task=>{
+
+
+const searchMatch =
+task.title
+.toLowerCase()
+.includes(search);
+
+
+
+const projectMatch =
+projectFilter==="All" ||
+task.project?._id===projectFilter;
+
+
+
+const statusMatch =
+statusFilter==="All" ||
+task.status===statusFilter;
+
+
+
+return searchMatch &&
+projectMatch &&
+statusMatch;
+
+
+});
+
+
+
+
+
+filtered.forEach(task=>{
+
+
+let statusClass =
+task.status==="Completed"
+?
+"badge-completed"
+:
+task.status==="Pending"
+?
+"badge-awaiting-review"
+:
+"badge-in-progress";
+
+
+
+let priorityClass =
+task.priority==="High"
+?
+"badge-priority-high"
+:
+task.priority==="Medium"
+?
+"badge-priority-med"
+:
+"badge-priority-low";
+
+
+
+
+tbody.innerHTML +=`
+
+<tr class="hover:bg-slate-50">
+
+
+<td class="px-6 py-4">
+
+<a href="task-details.html?id=${task._id}"
+class="font-semibold text-blue-600">
+
+${task.title}
+
+</a>
+
+</td>
+
+
+
+<td class="px-6 py-4">
+
+${task.project?.name || "No Project"}
+
+</td>
+
+
+
+
+<td class="px-6 py-4">
+
+${task.assignee?.name || "Unassigned"}
+
+</td>
+
+
+
+
+<td class="px-6 py-4">
+
+<span class="${statusClass}">
+${task.status}
+</span>
+
+</td>
+
+
+
+<td class="px-6 py-4">
+
+<span class="${priorityClass}">
+${task.priority}
+</span>
+
+</td>
+
+
+
+<td class="px-6 py-4">
+
+${formatDate(task.dueDate)}
+
+</td>
+
+
+
+
+<td class="px-6 py-4">
+
+
+<button 
+onclick="editTask('${task._id}')"
+class="text-blue-600 mr-3">
+
+<i class="fa fa-edit"></i>
+
+</button>
+
+
+
+<button
+onclick="deleteTask('${task._id}')"
+class="text-red-600">
+
+<i class="fa fa-trash"></i>
+
+</button>
+
+
+</td>
+
+
+
+</tr>
+
+
+`;
+
+});
+
+
+}
+
+
+
+
+
+// ===============================
+// CREATE / UPDATE TASK
+// ===============================
+
+
+async function handleTaskSubmit(e){
+
+
+e.preventDefault();
+
+
+
+const id =
+document.getElementById("task-id").value;
+
+
+
+
+const taskData={
+
+
+title:
+document.getElementById("task-title").value,
+
+
+description:
+document.getElementById("task-desc").value,
+
+
+project:
+document.getElementById("task-project").value,
+
+
+assignee:
+document.getElementById("task-assignee").value,
+
+
+status:
+document.getElementById("task-status").value,
+
+
+priority:
+document.getElementById("task-priority").value,
+
+
+dueDate:
+document.getElementById("task-duedate").value
+
+
+};
+
+
+
+
+let url =
+`${API_URL}/tasks`;
+
+
+let method="POST";
+
+
+
+if(id){
+
+url =
+`${API_URL}/tasks/${id}`;
+
+method="PUT";
+
+}
+
+
+
+
+
+try{
+
+
+await fetch(url,{
+
+method,
+
+headers:{
+
+"Content-Type":"application/json"
+
+},
+
+body:
+JSON.stringify(taskData)
+
+
+});
+
+
+
+closeTaskModal();
+
+
+await loadTasks();
+
+
+}
+
+catch(error){
+
+console.log(error);
+
+}
+
+
+}
+
+
+
+
+
+// ===============================
+// EDIT TASK
+// ===============================
+
+
+function editTask(id){
+
+
+const task =
+tasks.find(t=>t._id===id);
+
+
+
+if(!task)
+return;
+
+
+
+document.getElementById("task-id")
+.value=id;
+
+
+
+document.getElementById("task-title")
+.value=task.title;
+
+
+
+document.getElementById("task-desc")
+.value=
+task.description || "";
+
+
+
+document.getElementById("task-project")
+.value=
+task.project?._id || "";
+
+
+
+document.getElementById("task-assignee")
+.value=
+task.assignee?._id || "";
+
+
+
+document.getElementById("task-status")
+.value=task.status;
+
+
+
+document.getElementById("task-priority")
+.value=task.priority;
+
+
+
+document.getElementById("task-duedate")
+.value=
+task.dueDate.substring(0,10);
+
+
+
+document
+.getElementById("task-modal")
+.classList
+.remove("hidden");
+
+
+}
+
+
+
+
+
+// ===============================
+// DELETE TASK
+// ===============================
+
+
+async function deleteTask(id){
+
+
+if(!confirm("Delete this task?"))
+return;
+
+
+
+try{
+
+
+await fetch(
+
+`${API_URL}/tasks/${id}`,
+
+{
+
+method:"DELETE"
+
+}
+
+);
+
+
+
+await loadTasks();
+
+
+}
+
+catch(error){
+
+console.log(error);
+
+}
+
+
+}
+
+
+
+
+
+// ===============================
+// MODAL
+// ===============================
+
+
+function openTaskModal(){
+
+
+document
+.getElementById("task-form")
+.reset();
+
+
+
+document
+.getElementById("task-id")
+.value="";
+
+
+
+document
+.getElementById("task-modal")
+.classList
+.remove("hidden");
+
+
+}
+
+
+
+function closeTaskModal(){
+
+
+document
+.getElementById("task-modal")
+.classList
+.add("hidden");
+
+
+}
+
+
+
+
+
+// ===============================
+// INITIAL LOAD
+// ===============================
+
+
+window.onload = async()=>{
+
+
+await loadProjects();
+
+await loadUsers();
+
+await loadTasks();
+
+
+};
+  </script>
+</body>
+</html>
