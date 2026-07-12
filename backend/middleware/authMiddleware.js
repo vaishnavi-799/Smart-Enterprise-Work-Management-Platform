@@ -45,11 +45,11 @@ const protect = async (req,res,next)=>{
     }
     else{
 
-        res.status(401);
+    return res.status(401).json({
+        message:"No token"
+    });
 
-        throw new Error("No token");
-
-    }
+}
 
 };
 

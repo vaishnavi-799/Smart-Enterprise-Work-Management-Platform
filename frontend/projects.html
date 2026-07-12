@@ -321,137 +321,97 @@
     </div>
   </div>
 
-  <script src="db.js"></script>
+ 
   <script>
-    let chartInstance = null;
 
-    function renderDashboard() {
-      const projects = window.PM_DB.getProjects();
-      const stats = window.PM_DB.getStats();
-      const activities = window.PM_DB.getActivities();
+    
 
-      // Update statistics
-      document.getElementById("stat-active").innerText = stats.activeProjects;
-      document.getElementById("stat-priority").innerText = `${stats.highPriority} High, ${stats.medPriority} Med`;
-      document.getElementById("stat-tasks").innerText = stats.myTasksCount;
-      document.getElementById("stat-online").innerText = `${stats.onlineMembers}/${stats.totalMembers}`;
+const API_URL = "http://localhost:5000/api";
 
-      const tbody = document.getElementById("projects-table-body");
-      tbody.innerHTML = "";
+const token = localStorage.getItem("token");
 
-      if (projects.length === 0) {
-        tbody.innerHTML = `
-          <tr>
-            <td colspan="7" class="px-6 py-12 text-center text-slate-400">
-              <div class="flex flex-col items-center justify-center py-4">
-                <i data-lucide="folder-open" class="w-8 h-8 text-slate-300 mb-2"></i>
-                <span class="text-sm font-semibold text-slate-500">No projects added yet.</span>
-                <span class="text-xs text-slate-400 mt-1">Click "+ New Project" above to create your first tracking project.</span>
-              </div>
-            </td>
-          </tr>
-        `;
-        lucide.createIcons();
-        renderChart(projects);
-        return;
-      }
+let chartInstance = null;
 
-      projects.forEach(p => {
-        let statusClass = "badge-in-progress";
-        if (p.status === "Awaiting Review") statusClass = "badge-awaiting-review";
-        if (p.status === "Completed") statusClass = "badge-completed";
 
-        let priorityClass = "badge-priority-high";
-        if (p.priority === "Medium") priorityClass = "badge-priority-med";
-        if (p.priority === "Low") priorityClass = "badge-priority-low";
+const headers = {
+    "Content-Type":"application/json",
+    "Authorization":`Bearer ${token}`
+};
 
-        let teamHTML = "";
-        if (p.team) {
-          p.team.forEach(t => {
-            teamHTML += `
-              <div class="w-7 h-7 rounded-full border-2 border-white ${t.color} text-white text-[9px] font-bold flex items-center justify-center avatar-stack-item cursor-pointer" title="${t.name}">
-                ${t.initials}
-              </div>
-            `;
-          });
-        }
+    async function renderDashboard(){
 
-        const circumference = 2 * Math.PI * 14;
-        const offset = circumference - (circumference * p.progress) / 100;
+try{
 
-        tbody.innerHTML += `
-          <tr class="hover:bg-slate-50/50 transition-colors">
-            <td class="px-6 py-4 flex items-center gap-3">
-              <div class="p-2 bg-slate-100 rounded-lg text-slate-500">
-                <i data-lucide="folder" class="w-4 h-4"></i>
-              </div>
-              <span class="font-semibold text-slate-800">${p.name}</span>
-            </td>
-            <td class="px-6 py-4">
-              <span class="px-2.5 py-1 text-xs font-semibold rounded-full ${priorityClass}">${p.priority}</span>
-            </td>
-            <td class="px-6 py-4">
-              <span class="px-2.5 py-1 text-xs font-semibold rounded-full ${statusClass}">${p.status}</span>
-            </td>
-            <td class="px-6 py-4">
-              <div class="flex items-center gap-2">
-                <div class="relative w-8 h-8 flex items-center justify-center">
-                  <svg class="w-8 h-8 transform -rotate-90">
-                    <circle cx="16" cy="16" r="13" class="text-slate-100" stroke-width="2.5" stroke="currentColor" fill="none" />
-                    <circle cx="16" cy="16" r="13" class="text-blue-600 transition-all duration-300" stroke-width="2.5" 
-                      stroke-dasharray="${circumference}" 
-                      stroke-dashoffset="${offset}" 
-                      stroke="currentColor" fill="none" stroke-linecap="round" />
-                  </svg>
-                  <span class="absolute text-[9px] font-bold text-slate-700">${p.progress}%</span>
-                </div>
-              </div>
-            </td>
-            <td class="px-6 py-4 text-slate-500 font-medium">${p.dueDate}</td>
-            <td class="px-6 py-4">
-              <div class="flex items-center">${teamHTML}</div>
-            </td>
-            <td class="px-6 py-4">
-              <div class="flex items-center justify-center gap-2">
-                <button onclick="editProject('${p.id}')" class="p-1.5 text-slate-400 hover:text-blue-600 rounded-md hover:bg-blue-50 transition-colors">
-                  <i data-lucide="pencil" class="w-4 h-4"></i>
-                </button>
-                <button onclick="deleteProject('${p.id}')" class="p-1.5 text-slate-400 hover:text-rose-600 rounded-md hover:bg-rose-50 transition-colors">
-                  <i data-lucide="trash-2" class="w-4 h-4"></i>
-                </button>
-              </div>
-            </td>
-          </tr>
-        `;
-      });
 
-      // Activities
-      const activityFeed = document.getElementById("activity-feed");
-      activityFeed.innerHTML = "";
-      if (activities.length === 0) {
-        activityFeed.innerHTML = `<span class="text-xs text-slate-400 italic block py-4 text-center">No logs recorded yet.</span>`;
-      } else {
-        activities.forEach(act => {
-          activityFeed.innerHTML += `
-            <div class="flex gap-3">
-              <div class="w-8 h-8 rounded-full ${act.color} text-white font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">
-                ${act.avatar}
-              </div>
-              <div class="flex-1 min-w-0">
-                <p class="text-xs text-slate-700">
-                  <strong class="font-semibold text-slate-900">${act.user}</strong> ${act.action}
-                </p>
-                ${act.details ? `<p class="text-xs text-slate-400 mt-0.5 italic truncate">${act.details}</p>` : ''}
-                <span class="text-[10px] text-slate-400 font-medium block mt-1">${act.time}</span>
-              </div>
-            </div>
-          `;
-        });
-      }
+const response = await fetch(
+`${API_URL}/projects`,
+{
+headers
+}
+);
 
-      lucide.createIcons();
-      renderChart(projects);
-    }
+
+const projects = await response.json();
+
+
+console.log("Projects:",projects);
+
+
+
+updateStats(projects);
+
+
+renderProjects(projects);
+
+
+renderChart(projects);
+
+
+}
+catch(error){
+
+console.log(error);
+
+}
+
+}
+function updateStats(projects){
+
+
+document.getElementById("stat-active").innerText =
+projects.filter(
+p=>p.status!=="Completed"
+).length;
+
+
+
+let high =
+projects.filter(
+p=>p.priority==="High"
+).length;
+
+
+let medium =
+projects.filter(
+p=>p.priority==="Medium"
+).length;
+
+
+document.getElementById("stat-priority")
+.innerText =
+`${high} High, ${medium} Med`;
+
+
+
+document.getElementById("stat-tasks")
+.innerText="0";
+
+
+document.getElementById("stat-online")
+.innerText="1/1";
+
+
+}
 
     function renderChart(projects) {
       const canvas = document.getElementById("assetChart");
@@ -552,38 +512,209 @@
       document.getElementById("project-modal").classList.add("hidden");
     }
 
-    function handleProjectSubmit(e) {
-      e.preventDefault();
-      const id = document.getElementById("project-id").value;
-      const name = document.getElementById("project-name").value;
-      const priority = document.getElementById("project-priority").value;
-      const status = document.getElementById("project-status").value;
-      const progress = document.getElementById("project-progress").value;
-      const dueDate = document.getElementById("project-duedate").value;
+    async function handleProjectSubmit(e){
 
-      const updatedProj = { name, priority, status, progress, dueDate };
-      if (id) {
-        updatedProj.id = id;
-        window.PM_DB.saveProject(updatedProj);
-        window.PM_DB.addActivity(`updated project details for "${name}"`);
-      } else {
-        window.PM_DB.saveProject(updatedProj);
-        window.PM_DB.addActivity(`created new project "${name}"`);
-      }
+e.preventDefault();
 
-      closeProjectModal();
-      renderDashboard();
-    }
 
-    function deleteProject(id) {
-      const p = window.PM_DB.getProjectById(id);
-      if (!p) return;
-      if (confirm(`Are you sure you want to delete the project "${p.name}"? This will delete all associated tasks as well.`)) {
-        window.PM_DB.deleteProject(id);
-        window.PM_DB.addActivity(`deleted project "${p.name}"`);
-        renderDashboard();
-      }
-    }
+const project={
+
+name:
+document.getElementById("project-name").value,
+
+
+priority:
+document.getElementById("project-priority").value,
+
+
+status:
+document.getElementById("project-status").value,
+
+
+progress:
+Number(
+document.getElementById("project-progress").value
+),
+
+
+dueDate:
+document.getElementById("project-duedate").value
+
+};
+
+
+
+try{
+
+
+await fetch(
+
+`${API_URL}/projects`,
+
+{
+
+method:"POST",
+
+headers,
+
+body:JSON.stringify(project)
+
+}
+
+);
+
+
+
+closeProjectModal();
+
+
+renderDashboard();
+
+
+
+}
+catch(error){
+
+console.log(error);
+
+}
+
+
+}
+
+    async function deleteProject(id){
+
+
+if(confirm("Delete project?")){
+
+
+await fetch(
+
+`${API_URL}/projects/${id}`,
+
+{
+
+method:"DELETE",
+
+headers
+
+}
+
+);
+
+
+
+renderDashboard();
+
+
+}
+
+
+}
+
+function renderProjects(projects){
+
+const tbody=document.getElementById("projects-table-body");
+
+tbody.innerHTML="";
+
+
+if(projects.length===0){
+
+tbody.innerHTML=`
+<tr>
+<td colspan="7" class="text-center py-10 text-slate-400">
+No projects found
+</td>
+</tr>
+`;
+
+return;
+
+}
+
+
+
+projects.forEach(p=>{
+
+
+tbody.innerHTML += `
+
+<tr class="hover:bg-slate-50">
+
+<td class="px-6 py-4 font-semibold">
+${p.name}
+</td>
+
+
+<td class="px-6 py-4">
+
+<span class="px-3 py-1 rounded-full text-xs bg-yellow-100">
+
+${p.priority}
+
+</span>
+
+</td>
+
+
+<td class="px-6 py-4">
+
+${p.status}
+
+</td>
+
+
+
+<td class="px-6 py-4">
+
+${p.progress}%
+
+</td>
+
+
+
+<td class="px-6 py-4">
+
+${new Date(p.dueDate).toLocaleDateString()}
+
+</td>
+
+
+
+<td class="px-6 py-4">
+
+${p.members ? p.members.length : 0}
+
+Members
+
+</td>
+
+
+
+<td class="px-6 py-4 text-center">
+
+<button 
+onclick="deleteProject('${p._id}')"
+class="text-red-500">
+
+Delete
+
+</button>
+
+</td>
+
+
+</tr>
+
+`;
+
+});
+
+
+lucide.createIcons();
+
+}
 
     function openActivityModal() {
       const activities = window.PM_DB.getActivities();
@@ -616,6 +747,7 @@
     function closeActivityModal() {
       document.getElementById("activity-modal").classList.add("hidden");
     }
+    
 
     window.addEventListener("DOMContentLoaded", () => {
       renderDashboard();

@@ -1,14 +1,72 @@
-const asyncHandler = require('../utils/asyncHandler');
-const User = require('../models/User');
+const User = require("../models/User");
+const Task = require("../models/Task");
+const Project = require("../models/Project");
 
-const getUsers = asyncHandler(async (req, res) => {
-  const users = await User.find({}).select('-password');
-  res.json(users);
-});
 
-const getUserProfile = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id).select('-password');
-  if (user) { res.json(user); } else { res.status(404); throw new Error('User not found'); }
-});
+exports.getUsers = async(req,res)=>{
 
-module.exports = { getUsers, getUserProfile };
+    try{
+
+        const users = await User.find()
+        .select("-password");
+
+        res.json(users);
+
+    }
+    catch(error){
+
+        res.status(500).json({
+            message:error.message
+        });
+
+    }
+
+};
+
+
+
+exports.getUserProfile = async(req,res)=>{
+
+    try{
+
+        const userId = req.user._id;
+
+
+        const user = await User.findById(userId)
+        .select("-password");
+
+
+        if(!user){
+            return res.status(404).json({
+                message:"User not found"
+            });
+        }
+
+
+        const tasks = await Task.find({
+            assignee:userId
+        });
+
+
+        const projects = await Project.find({
+            members:userId
+        });
+
+
+        res.json({
+            user,
+            tasks,
+            projects
+        });
+
+
+    }
+    catch(error){
+
+        res.status(500).json({
+            message:error.message
+        });
+
+    }
+
+};

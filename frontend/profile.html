@@ -79,7 +79,7 @@
             class="w-8 h-8 rounded-full object-cover border border-indigo-100"
           >
           <div class="text-left">
-            <p id="nav-user-name" class="text-xs font-bold leading-3 text-slate-800">John Doe</p>
+            <p id="card-user-name" class="text-xs font-bold leading-3 text-slate-800"></p>
             <span class="text-[10px] text-slate-400 font-medium">Project Manager</span>
           </div>
         </div>
@@ -99,7 +99,7 @@
             </div>
           </div>
 
-          <h3 id="card-user-name" class="text-xl font-bold text-slate-800">John Doe</h3>
+          <h3 id="profile-name"></h3>
           <p class="text-sm text-indigo-600 font-medium tracking-wide mt-0.5">Project Manager</p>
 
           <hr class="w-full my-6 border-slate-100">
@@ -111,14 +111,14 @@
                 <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 block mb-1">Email Address</span>
                 <div class="flex items-center gap-2 text-slate-700 bg-slate-50 px-3 py-2.5 rounded-xl border border-slate-100 text-sm">
                   <i class="fa-regular fa-envelope text-slate-400"></i>
-                  <span id="display-email" class="truncate font-medium">john.doe@workflowpro.com</span>
+                  <span id="display-email"></span>
                 </div>
               </div>
               <div>
                 <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 block mb-1">Assigned Team</span>
                 <div class="flex items-center gap-2 text-slate-700 bg-slate-50 px-3 py-2.5 rounded-xl border border-slate-100 text-sm">
                   <i class="fa-solid fa-users text-slate-400"></i>
-                  <span class="font-medium">Alpha Product Core</span>
+                  <p id="user-role"></p>
                 </div>
               </div>
               <button 
@@ -170,133 +170,669 @@
 
         <div class="lg:col-span-2 space-y-6">
           
-          <div class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
-            <div class="flex items-center gap-2 mb-4">
-              <div class="p-1.5 bg-blue-50 text-blue-600 rounded-lg">
+          
+          
+    <!-- MY PROJECTS -->
+    <div class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
+
+        <div class="flex items-center gap-2 mb-4">
+
+            <div class="p-1.5 bg-blue-50 text-blue-600 rounded-lg">
                 <i class="fa-solid fa-briefcase"></i>
-              </div>
-              <h4 class="text-lg font-bold text-slate-800">My Projects</h4>
             </div>
-            <div class="space-y-3">
-              <div class="flex items-center justify-between border border-slate-100 p-4 rounded-xl bg-slate-50/50">
-                <div>
-                  <h5 class="font-semibold text-slate-800 text-sm">Workflow Pro Platform</h5>
-                  <p class="text-xs text-slate-400 mt-0.5">Role: Lead</p>
-                </div>
-                <span class="bg-blue-50 border border-blue-200 text-blue-600 px-3 py-1 rounded-full text-xs font-semibold tracking-wide shadow-sm">
-                  In Progress
-                </span>
-              </div>
-            </div>
-          </div>
 
-          <div class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
-            <div class="flex items-center gap-2 mb-4">
-              <div class="p-1.5 bg-amber-50 text-amber-600 rounded-lg">
+            <h4 class="text-lg font-bold text-slate-800">
+                My Projects
+            </h4>
+
+        </div>
+
+
+        <div id="projects-container" class="space-y-3">
+
+        </div>
+
+    </div>
+
+
+
+
+    <!-- APPROACHING DEADLINES -->
+    <div class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
+
+        <div class="flex items-center gap-2 mb-4">
+
+            <div class="p-1.5 bg-amber-50 text-amber-600 rounded-lg">
+
                 <i class="fa-regular fa-calendar-days"></i>
-              </div>
-              <h4 class="text-lg font-bold text-slate-800">Approaching Deadlines</h4>
-            </div>
-            <div class="space-y-3">
-              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between border border-slate-100 p-4 rounded-xl bg-slate-50/50 gap-2">
-                <div class="flex items-start gap-3">
-                  <div class="w-2 h-2 rounded-full bg-rose-500 mt-1.5 animate-pulse"></div>
-                  <div>
-                    <h5 class="font-semibold text-slate-800 text-sm">Phase 1 Core Dashboard Deliverable</h5>
-                    <p class="text-xs text-slate-400 mt-0.5 flex items-center gap-1">
-                      <i class="fa-regular fa-calendar text-[11px]"></i> Target: July 25, 2026
-                    </p>
-                  </div>
-                </div>
-                <span class="bg-rose-50 border border-rose-100 text-rose-600 px-2.5 py-0.5 rounded-md text-xs font-medium self-start sm:self-center">
-                  High Priority
-                </span>
-              </div>
-            </div>
-          </div>
 
-          <div class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
-            <div class="flex items-center gap-2 mb-4">
-              <div class="p-1.5 bg-emerald-50 text-emerald-600 rounded-lg">
+            </div>
+
+
+            <h4 class="text-lg font-bold text-slate-800">
+                Approaching Deadlines
+            </h4>
+
+        </div>
+
+
+
+        <div id="deadline-container" class="space-y-3">
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+    <!-- ACTIVE TASK BOARD -->
+    <div class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
+
+
+        <div class="flex items-center gap-2 mb-4">
+
+
+            <div class="p-1.5 bg-emerald-50 text-emerald-600 rounded-lg">
+
                 <i class="fa-regular fa-square-check"></i>
-              </div>
-              <h4 class="text-lg font-bold text-slate-800">Active Task Board</h4>
+
             </div>
-            <div class="space-y-3">
-              <div class="flex items-center justify-between border border-slate-100 p-4 rounded-xl hover:bg-slate-50 transition duration-150">
-                <div class="flex items-center gap-3">
-                  <input 
-                    type="checkbox" 
-                    class="w-4 h-4 text-brandBlue border-slate-300 rounded focus:ring-brandBlue cursor-pointer" 
-                    disabled
-                  >
-                  <span class="text-sm font-medium text-slate-700">dh</span>
-                </div>
-                <span class="text-xs font-semibold bg-blue-50 text-blue-600 border border-blue-100 px-2.5 py-1 rounded-md">
-                  In Progress
-                </span>
-              </div>
-            </div>
-          </div>
+
+
+            <h4 class="text-lg font-bold text-slate-800">
+                Active Task Board
+            </h4>
+
+
+        </div>
+
+
+
+
+        <div id="task-board-container" class="space-y-3">
+
+        </div>
+
+
+    </div>
+
+
+
 
         </div>
       </div>
     </main>
   </div>
 
-  <script>
-    // Initial Dynamic User Object data (simulation of signup variables)
-    const userData = {
-      name: "John Doe",
-      email: "john.doe@workflowpro.com"
+ <script>
+
+const API_URL = "http://localhost:5000/api";
+
+
+// ======================================
+// LOAD USER PROFILE
+// ======================================
+
+async function loadProfile(){
+
+    const token = localStorage.getItem("token");
+
+
+    if(!token){
+
+        window.location.href="login.html";
+        return;
+
+    }
+
+
+    try{
+
+
+        const response = await fetch(
+            `${API_URL}/users/profile`,
+            {
+                headers:{
+                    "Authorization":`Bearer ${token}`,
+                    "Content-Type":"application/json"
+                }
+            }
+        );
+
+
+
+        const data = await response.json();
+
+
+        console.log("Profile Data:",data);
+
+
+
+        if(!response.ok){
+
+            throw new Error(data.message);
+
+        }
+
+
+
+        const user = data.user;
+
+
+
+        document.getElementById(
+            "card-user-name"
+        ).innerText = user.name;
+
+
+
+        document.getElementById(
+            "profile-name"
+        ).innerText = user.name;
+
+
+
+        document.getElementById(
+            "display-email"
+        ).innerText = user.email;
+
+
+
+        document.getElementById(
+            "user-role"
+        ).innerText = user.role || "Member";
+
+
+
+    }
+    catch(error){
+
+        console.log(
+            "Profile Error:",
+            error
+        );
+
+    }
+
+}
+
+
+
+
+
+// ======================================
+// LOAD PROJECTS AND TASKS
+// ======================================
+
+
+async function loadProfileData(){
+
+
+    const token = localStorage.getItem("token");
+
+
+    const headers={
+
+        "Authorization":
+        `Bearer ${token}`,
+
+        "Content-Type":
+        "application/json"
+
     };
 
-    // DOM Elements Selector
-    const viewModeContainer = document.getElementById('profile-view-mode');
-    const editModeContainer = document.getElementById('profile-edit-mode');
-    
-    const displayEmail = document.getElementById('display-email');
-    const cardUserName = document.getElementById('card-user-name');
-    const navUserName = document.getElementById('nav-user-name');
 
-    const inputName = document.getElementById('input-name');
-    const inputEmail = document.getElementById('input-email');
 
-    const btnEdit = document.getElementById('btn-edit');
-    const btnCancel = document.getElementById('btn-cancel');
+    try{
 
-    // Switch View To Form Editor Mode
-    btnEdit.addEventListener('click', () => {
-      inputName.value = userData.name;
-      inputEmail.value = userData.email;
-      
-      viewModeContainer.classList.add('hidden');
-      editModeContainer.classList.remove('hidden');
-    });
 
-    // Close / Cancel Editor
-    btnCancel.addEventListener('click', () => {
-      viewModeContainer.classList.remove('hidden');
-      editModeContainer.classList.add('hidden');
-    });
+        // ==========================
+        // PROJECTS
+        // ==========================
 
-    // Handle Form Submit (Dynamically mutates text nodes across screen)
-    editModeContainer.addEventListener('submit', (e) => {
-      e.preventDefault();
-      
-      // Update data state values
-      userData.name = inputName.value;
-      userData.email = inputEmail.value;
 
-      // Dynamically re-render UI elements cleanly
-      cardUserName.textContent = userData.name;
-      navUserName.textContent = userData.name;
-      displayEmail.textContent = userData.email;
+        const projectResponse =
+        await fetch(
 
-      // Close the form panel layout view back down to default
-      viewModeContainer.classList.remove('hidden');
-      editModeContainer.classList.add('hidden');
-    });
-  </script>
+            `${API_URL}/projects`,
+
+            {
+                headers
+            }
+
+        );
+
+
+
+        const projects =
+        await projectResponse.json();
+
+
+
+        console.log(
+            "Projects:",
+            projects
+        );
+
+
+
+        const projectContainer =
+        document.getElementById(
+            "projects-container"
+        );
+
+
+
+        projectContainer.innerHTML="";
+
+
+
+        if(projects.length===0){
+
+
+            projectContainer.innerHTML=
+            `
+
+            <p class="text-gray-400 text-sm">
+            No projects assigned
+            </p>
+
+            `;
+
+
+        }
+        else{
+
+
+            projects.forEach(project=>{
+
+
+                projectContainer.innerHTML +=
+
+
+                `
+
+                <div class="flex items-center justify-between border border-slate-100 p-4 rounded-xl bg-slate-50/50">
+
+
+                    <div>
+
+                        <h5 class="font-semibold text-slate-800 text-sm">
+
+                        ${project.name}
+
+                        </h5>
+
+
+                        <p class="text-xs text-slate-400">
+
+                        Role:
+                        ${project.role || "Member"}
+
+                        </p>
+
+
+                    </div>
+
+
+
+                    <span class="bg-blue-50 border border-blue-200 text-blue-600 px-3 py-1 rounded-full text-xs">
+
+
+                    ${project.status || "In Progress"}
+
+
+                    </span>
+
+
+
+                </div>
+
+
+                `;
+
+
+            });
+
+
+        }
+
+
+
+
+
+
+
+
+        // ==========================
+        // TASKS
+        // ==========================
+
+
+
+        const taskResponse =
+        await fetch(
+
+            `${API_URL}/tasks`,
+
+            {
+                headers
+            }
+
+        );
+
+
+
+        const tasks =
+        await taskResponse.json();
+
+
+
+        console.log(
+            "Tasks:",
+            tasks
+        );
+
+
+
+        const taskContainer =
+        document.getElementById(
+            "task-board-container"
+        );
+
+
+
+        taskContainer.innerHTML="";
+
+
+
+
+        if(tasks.length===0){
+
+
+            taskContainer.innerHTML=
+            `
+
+            <p class="text-gray-400 text-sm">
+            No active tasks
+            </p>
+
+            `;
+
+
+        }
+        else{
+
+
+            tasks.forEach(task=>{
+
+
+                taskContainer.innerHTML +=
+
+
+                `
+
+                <div class="flex items-center justify-between border border-slate-100 p-4 rounded-xl">
+
+
+                    <div class="flex items-center gap-3">
+
+
+                        <input 
+                        type="checkbox"
+                        ${task.status==="Completed"?"checked":""}
+                        disabled
+                        >
+
+
+
+                        <span class="text-sm font-medium">
+
+                        ${task.title}
+
+                        </span>
+
+
+                    </div>
+
+
+
+
+                    <span class="text-xs bg-blue-50 text-blue-600 px-3 py-1 rounded-md">
+
+
+                    ${task.status}
+
+
+                    </span>
+
+
+
+                </div>
+
+
+                `;
+
+
+
+            });
+
+
+
+        }
+
+
+
+
+
+
+
+
+        // ==========================
+        // DEADLINES
+        // ==========================
+
+
+
+        const deadlineContainer =
+        document.getElementById(
+            "deadline-container"
+        );
+
+
+
+        deadlineContainer.innerHTML="";
+
+
+
+        const deadlineTasks =
+        tasks.filter(
+            task=>task.dueDate
+        );
+
+
+
+        if(deadlineTasks.length===0){
+
+
+            deadlineContainer.innerHTML=
+
+            `
+
+            <p class="text-gray-400 text-sm">
+
+            No upcoming deadlines
+
+            </p>
+
+            `;
+
+
+        }
+        else{
+
+
+            deadlineTasks.forEach(task=>{
+
+
+                deadlineContainer.innerHTML +=
+
+
+                `
+
+                <div class="border border-slate-100 p-4 rounded-xl bg-slate-50/50">
+
+
+                    <h5 class="font-semibold text-slate-800 text-sm">
+
+                    ${task.title}
+
+                    </h5>
+
+
+
+                    <p class="text-xs text-slate-400 mt-1">
+
+                    Target:
+                    ${formatDate(task.dueDate)}
+
+                    </p>
+
+
+
+                    <span class="text-xs text-red-600">
+
+                    ${task.priority}
+
+                    </span>
+
+
+
+                </div>
+
+
+                `;
+
+
+            });
+
+
+
+        }
+
+
+
+
+
+    }
+    catch(error){
+
+
+        console.log(
+            "Loading Error:",
+            error
+        );
+
+
+    }
+
+
+
+}
+
+
+
+
+
+
+
+// ======================================
+// DATE FORMAT
+// ======================================
+
+
+function formatDate(date){
+
+
+    if(!date)
+    return "";
+
+
+
+    return new Date(date)
+    .toLocaleDateString(
+
+        "en-US",
+
+        {
+
+            day:"2-digit",
+
+            month:"short",
+
+            year:"numeric"
+
+        }
+
+    );
+
+
+}
+
+
+
+
+
+
+// ======================================
+// LOGOUT
+// ======================================
+
+
+function logout(){
+
+
+    localStorage.removeItem("token");
+
+    localStorage.removeItem("user");
+
+
+    window.location.href="login.html";
+
+
+}
+
+
+
+
+
+
+
+// ======================================
+// PAGE LOAD
+// ======================================
+
+
+window.onload = async()=>{
+
+
+    await loadProfile();
+
+
+    await loadProfileData();
+
+
+};
+
+
+
+</script>
+
+
+
+
 </body>
 </html>
