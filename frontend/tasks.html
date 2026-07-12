@@ -434,8 +434,16 @@ async function loadTasks(){
 try{
 
 
+const token = localStorage.getItem("token");
+
+
 const res =
-await fetch(`${API_URL}/tasks`);
+await fetch(`${API_URL}/tasks`,
+{
+    headers:{
+        Authorization:`Bearer ${token}`
+    }
+});
 
 
 tasks =
@@ -743,21 +751,21 @@ method="PUT";
 try{
 
 
+const token = localStorage.getItem("token");
+
 await fetch(url,{
+    method,
 
-method,
+    headers:{
+        "Content-Type":"application/json",
+        Authorization:`Bearer ${token}`
+    },
 
-headers:{
-
-"Content-Type":"application/json"
-
-},
-
-body:
-JSON.stringify(taskData)
-
-
+    body:JSON.stringify(taskData)
 });
+
+
+
 
 
 
@@ -872,17 +880,16 @@ return;
 try{
 
 
+const token = localStorage.getItem("token");
+
 await fetch(
-
 `${API_URL}/tasks/${id}`,
-
 {
-
-method:"DELETE"
-
-}
-
-);
+    method:"DELETE",
+    headers:{
+        Authorization:`Bearer ${token}`
+    }
+});
 
 
 

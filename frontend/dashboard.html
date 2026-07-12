@@ -636,10 +636,15 @@ async function updateDashboardViews(){
 
 
 
-        document.getElementById(
-            "count-pending"
-        ).innerText = inProgressCount;
+       const pendingCount =
+                taskData.filter(
+                t=>t.status==="Pending"
+                ).length;
 
+
+                document.getElementById(
+                "count-pending"
+                ).innerText = pendingCount;
 
 
         const pctCompleted =
@@ -948,12 +953,17 @@ async function handleCustomTaskAdd(){
 
     await createTask({
 
-        title:title,
+    title:title,
 
-        status:"In Progress"
+    description:"Created from dashboard",
 
-    });
+    status:"In Progress",
 
+    priority:"Medium",
+
+    dueDate:null
+
+});
 
 
     input.value="";

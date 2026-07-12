@@ -9,10 +9,12 @@ const Task = require("../models/Task");
 
 const getTasks = asyncHandler(async (req, res) => {
 
-    const tasks = await Task.find()
-        .populate("project")
-        .populate("assignee")
-        .populate("comments.user");
+    const tasks = await Task.find({
+        assignee: req.user._id
+    })
+    .populate("project")
+    .populate("assignee")
+    .populate("comments.user");
 
 
     res.json(tasks);
@@ -56,29 +58,26 @@ const getTaskById = asyncHandler(async (req, res) => {
 
 const createTask = asyncHandler(async(req,res)=>{
 
+const task = await Task.create({
 
-    const task = await Task.create({
+title:req.body.title,
 
-        title:req.body.title,
+description:req.body.description || "",
 
-        description:req.body.description,
+project:req.body.project || null,
 
-        project:req.body.project,
+assignee:req.user._id,
 
-        assignee:req.body.assignee,
+status:req.body.status || "Pending",
 
-        status:req.body.status,
+priority:req.body.priority || "Medium",
 
-        priority:req.body.priority,
+dueDate:req.body.dueDate || null
 
-        dueDate:req.body.dueDate
-
-    });
-
+});
 
 
-    res.status(201).json(task);
-
+res.status(201).json(task);
 
 });
 
